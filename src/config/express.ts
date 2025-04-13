@@ -2,7 +2,6 @@ import express, { Application } from "express";
 import morgan from "morgan";
 import compression from "compression";
 import { securityHeaders, corsMiddleware } from "../middleware/securityHeaders";
-import { apiLimiter } from "../middleware/rateLimiter";
 import { responseEnhancer } from "../middleware/responseEnhancer";
 import { httpLogger } from "../utils/logger";
 import { errorHandler, notFoundHandler } from "../middleware/errorHandler";
@@ -31,17 +30,47 @@ export default function configureExpress(): Application {
   app.use(responseEnhancer);
 
   // Logging
-  app.use(morgan("dev")); // Simple console logging for development
-  app.use(httpLogger); // Structured logging for production
+  if (env.NODE_ENV === "development") {
+    app.use(morgan("dev")); // Simple console logging for development
+  } else {
+    app.use(httpLogger); // Structured logging for production
+  }
 
-  // Compression
-  app.use(compression());
+  // Performance: Enable compression
+  // app.use(
+  //   compression({
+  //     // Filter out small responses or already compressed formats
+  //     filter: (req, res) => {
+  //       if (req.headers["x-no-compression"]) {
+  //         return false;
+  //       }
+  //       return compression.filter(req, res);
+  //     },
+  //     // Compression level (0-9), higher = more compression but slower
+  //     level: 6,
+  //   })
+  // );
 
-  // Rate limiting for API routes
-  app.use(`${env.API_PREFIX}`, apiLimiter);
+  // Health check endpoint
+  app.get("/health", (req, res) => {
+    const healthData = {
+      status: "ok",
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+      environment: env.NODE_ENV,
+    };
+    res.success(healthData);
+  });
 
-  // Health check endpoint (unrestricted by rate limits)
-  app.get("/health", (req, res) => res.success({ status: "ok" }));
+  // API information endpoint
+  app.get(`${env.API_PREFIX}`, (req, res) => {
+    res.success({
+      name: "Express Startup API",
+      version: "1.0.0",
+      environment: env.NODE_ENV,
+      apiPrefix: env.API_PREFIX,
+    });
+  });
 
   return app;
 }

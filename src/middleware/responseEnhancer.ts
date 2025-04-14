@@ -11,12 +11,6 @@ export const responseEnhancer = (
   res: Response,
   next: NextFunction
 ): void => {
-  // Generate a unique ID for this request if not already present
-  req.id = req.id || (req.headers["x-request-id"] as string) || uuidv4();
-
-  // Add request ID to response headers
-  res.setHeader("x-request-id", req.id);
-
   // Enhance response with helper methods
   res.success = function (data: any, statusCode: number = HTTP_STATUS.OK) {
     sendSuccess(this, data, statusCode);

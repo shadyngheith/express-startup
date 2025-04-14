@@ -14,9 +14,6 @@ interface Environment {
   API_PREFIX: string;
   LOG_LEVEL: string;
   CORS_ORIGIN: string;
-  RATE_LIMIT_WINDOW_MS: number;
-  RATE_LIMIT_MAX: number;
-  // Add other environment variables as needed
 }
 
 // Configure and validate environment variables with defaults
@@ -26,11 +23,6 @@ export const env: Environment = {
   API_PREFIX: process.env.API_PREFIX || "/api",
   LOG_LEVEL: process.env.LOG_LEVEL || "info",
   CORS_ORIGIN: process.env.CORS_ORIGIN || "*",
-  RATE_LIMIT_WINDOW_MS: parseInt(
-    process.env.RATE_LIMIT_WINDOW_MS || "60000",
-    10
-  ),
-  RATE_LIMIT_MAX: parseInt(process.env.RATE_LIMIT_MAX || "100", 10),
 };
 
 // Validate required environment variables in production
@@ -40,7 +32,6 @@ export const validateEnv = (): void => {
       "NODE_ENV",
       "PORT",
       "API_PREFIX",
-      // Add other required vars
     ];
 
     const missingEnvVars = requiredEnvVars.filter((key) => !env[key]);

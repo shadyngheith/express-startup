@@ -18,17 +18,11 @@ export class ResponseBuilder<T = any> {
     this.response.meta!.requestId = requestId;
   }
 
-  /**
-   * Add data to the response
-   */
   withData(data: T): ResponseBuilder<T> {
     this.response.data = data;
     return this;
   }
 
-  /**
-   * Add error information to the response
-   */
   withError(
     code: string,
     message: string,
@@ -43,9 +37,6 @@ export class ResponseBuilder<T = any> {
     return this;
   }
 
-  /**
-   * Add metadata to the response
-   */
   withMeta(meta: Partial<ApiMetadata>): ResponseBuilder<T> {
     this.response.meta = {
       ...this.response.meta,
@@ -54,9 +45,6 @@ export class ResponseBuilder<T = any> {
     return this;
   }
 
-  /**
-   * Add pagination metadata
-   */
   withPagination(
     total: number,
     page: number,
@@ -81,9 +69,6 @@ export class ResponseBuilder<T = any> {
     return this;
   }
 
-  /**
-   * Send the response with the appropriate status code
-   */
   send(res: Response, statusCode: number = HTTP_STATUS.OK): void {
     res.status(statusCode).json(this.response);
   }

@@ -5,7 +5,7 @@ import logger from "./utils/logger";
 // Validate environment variables
 try {
   validateEnv();
-} catch (error) {
+} catch (error: any) {
   logger.error(`Environment validation failed: ${error.message}`);
   process.exit(1);
 }

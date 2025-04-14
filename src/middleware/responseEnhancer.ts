@@ -11,7 +11,10 @@ export const responseEnhancer = (
   res: Response,
   next: NextFunction
 ): void => {
-  // Enhance response with helper methods
+  req.id = req.id || (req.headers["x-request-id"] as string) || uuidv4();
+
+  res.setHeader("x-request-id", req.id);
+
   res.success = function (data: any, statusCode: number = HTTP_STATUS.OK) {
     sendSuccess(this, data, statusCode);
   };

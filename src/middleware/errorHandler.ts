@@ -3,7 +3,6 @@ import { HttpError } from "../types/error";
 import logger from "../utils/logger";
 import { HTTP_STATUS, ERROR_MESSAGES } from "../config/constants";
 import { env } from "../config/environment";
-import { ValidationError as ExpressValidatorError } from "express-validator";
 import { ResponseBuilder } from "../utils/responseBuilder";
 
 /**
@@ -26,37 +25,19 @@ export const errorHandler = (
 
   // If the error is expected (operational)
   if (err instanceof HttpError) {
-    const builder = new ResponseBuilder(req.id).withError(
-      err.code,
-      err.message,
-      err.details
-    );
+    let details = err.details || {};
 
     // Only include stack trace in development
     if (env.NODE_ENV === "development" && err.stack) {
-      builder.withError(err.code, err.message, {
-        ...err.details,
+      details = {
+        ...details,
         stack: err.stack.split("\n"),
-      });
+      };
     }
 
-    builder.send(res, err.statusCode);
-    return;
-  }
-
-  // Handle validation errors from express-validator
-  if (Array.isArray(err) && err[0] instanceof ExpressValidatorError) {
-    const validationErrors = err.map((e) => ({
-      field: e.param,
-      message: e.msg,
-      value: e.value,
-    }));
-
     new ResponseBuilder(req.id)
-      .withError("VALIDATION_ERROR", ERROR_MESSAGES.VALIDATION_ERROR, {
-        errors: validationErrors,
-      })
-      .send(res, HTTP_STATUS.UNPROCESSABLE_ENTITY);
+      .withError(err.code, err.message, details)
+      .send(res, err.statusCode);
     return;
   }
 

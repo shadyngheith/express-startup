@@ -1,5 +1,6 @@
 import winston from "winston";
 import { env } from "../config/environment";
+import { Request, Response, NextFunction } from "express";
 
 const { combine, timestamp, json, colorize, printf } = winston.format;
 
@@ -41,7 +42,7 @@ if (env.NODE_ENV === "production") {
 }
 
 // HTTP request logger
-export const httpLogger = (req, res, next) => {
+export const httpLogger = (req: Request, res: Response, next: NextFunction) => {
   const { method, url, ip, id } = req;
 
   req.startTime = process.hrtime();

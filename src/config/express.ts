@@ -1,6 +1,5 @@
-import express, { Application } from "express";
+import express, { Application, Request, Response } from "express";
 import morgan from "morgan";
-import compression from "compression";
 import { securityHeaders, corsMiddleware } from "../middleware/securityHeaders";
 import { responseEnhancer } from "../middleware/responseEnhancer";
 import { httpLogger } from "../utils/logger";
@@ -52,7 +51,7 @@ export default function configureExpress(): Application {
   // );
 
   // Health check endpoint
-  app.get("/health", (req, res) => {
+  app.get("/health", (req: Request, res: Response) => {
     const healthData = {
       status: "ok",
       timestamp: new Date().toISOString(),
@@ -63,7 +62,7 @@ export default function configureExpress(): Application {
   });
 
   // API information endpoint
-  app.get(`${env.API_PREFIX}`, (req, res) => {
+  app.get(`${env.API_PREFIX}`, (req: Request, res: Response) => {
     res.success({
       name: "Express Startup API",
       version: "1.0.0",

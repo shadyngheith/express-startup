@@ -13,6 +13,8 @@ export const responseEnhancer = (
 ): void => {
   req.id = req.id || (req.headers["x-request-id"] as string) || uuidv4();
 
+  req.locals = req.locals || {};
+
   res.setHeader("x-request-id", req.id);
 
   res.success = function (data: any, statusCode: number = HTTP_STATUS.OK) {
@@ -38,20 +40,3 @@ export const responseEnhancer = (
 
   next();
 };
-
-// Add types to express Response
-declare global {
-  namespace Express {
-    interface Response {
-      success(data: any, statusCode?: number): void;
-      created(data: any): void;
-      noContent(): void;
-      error(
-        message: string,
-        statusCode?: number,
-        code?: string,
-        details?: Record<string, any>
-      ): void;
-    }
-  }
-}

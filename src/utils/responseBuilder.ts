@@ -39,8 +39,13 @@ export class ResponseBuilder<T = any> {
 
   withMeta(meta: Partial<ApiMetadata>): ResponseBuilder<T> {
     this.response.meta = {
-      ...this.response.meta,
-      ...meta,
+      timestamp:
+        meta.timestamp ||
+        this.response.meta?.timestamp ||
+        new Date().toISOString(),
+      requestId: meta.requestId || this.response.meta?.requestId || "",
+      // Include optional properties
+      ...(meta.pagination && { pagination: meta.pagination }),
     };
     return this;
   }

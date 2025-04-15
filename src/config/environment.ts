@@ -18,10 +18,10 @@ interface Environment {
 
 // Configure and validate environment variables with defaults
 export const env: Environment = {
-  NODE_ENV: process.env.NODE_ENV || "development",
+  NODE_ENV: process.env.NODE_ENV || "production",
   PORT: parseInt(process.env.PORT || "3000", 10),
   API_PREFIX: process.env.API_PREFIX || "/api",
-  LOG_LEVEL: process.env.LOG_LEVEL || "info",
+  LOG_LEVEL: process.env.LOG_LEVEL || "debug",
   CORS_ORIGIN: process.env.CORS_ORIGIN || "*",
 };
 

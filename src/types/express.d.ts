@@ -1,6 +1,4 @@
-// src/types/express.d.ts
-
-import "express";
+import { Response } from "express";
 
 declare module "express-serve-static-core" {
   interface Request {
